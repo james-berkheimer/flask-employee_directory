@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block styles %}
+{{super()}}
+{% endblock %}
+
+{% block app_content %}
+    <div class="editProfile-layout">
+        {% for field in form.errors %}
+        {% for error in form.errors[field] %}
+            <div class="alert alert-error error">
+                <strong>Error!</strong> {{error}}
+            </div>
+        {% endfor %}
+        {% endfor %}
+        <form id="cropForm">
+            <div id="overlay-container" class="popup-overlay">                
+                <div id="image-holder"></div>
+                <div>
+                    <input class="btn btn-primary" id="cropbtn" name="crop" type="submit" value="Click to complete Crop!">
+                    <button type="button" value="Button" id="cancelbtn">Cancel</button>
+                </div>
+            </div>
+        </form>          
+        <form action="" method="POST" enctype="multipart/form-data" class="form" role="form">
+            {{form.submit(class="btn btn-register-update")}}
+            {{ form.hidden_tag() }}
+            {% for field in form.errors %}
+                {% for error in form.errors[field] %}
+                    <div class="alert alert-error">
+                        <strong>Error!</strong>
+                        {{field}}: {{error}}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            <div class="row">
+                <div class="col-md-4 register-col1">                
+                    <div class="form-group  required"><label class="control-label" for="first_name">First Name</label>
+                        {{form.first_name(class="form-control")}}
+                    </div>
+                    <div class="form-group  required"><label class="control-label" for="last_name">Last Name</label>
+                        {{form.last_name(class="form-control")}}
+                    </div>
+                    <div class="form-group  required"><label class="control-label" for="email">Email</label>
+                        {{form.email(class="form-control")}}
+                    </div>
+                    
+                    </br>
+                    
+                    <div class="form-group  required"><label class="control-label" for="job_title">Job Title</label>
+                        {{form.job_title(class="form-control")}}
+                    </div>
+                    <div class="form-group  required"><label class="control-label" for="department">Department</label>
+                        {{form.department(class="form-control")}}
+                    </div>
+                    <div class="form-group"><label class="control-label" for="location">Location</label>
+                        {{form.location(class="form-control")}}
+                    </div>
+                    <div class="form-group  required"><label class="control-label" for="start_date">Start Date</label>   
+                        {{form.start_date(class="form-control")}}
+                    </div>
+                    <div class="form-group"><label class="control-label" for="current_employee">Current Employee? &nbsp;&nbsp;</label>   
+                        {{ form.current_employee }}
+                    </div> 
+                </div>
+                <div class="col-md-4 register-col2">                
+                    <img id="imageSrc" hidden="true" src="{{ imagePath }}">
+                    <label class="control-label" for="employee_image">Employee Photo</label>
+                    <br>
+                    <div class="input-group mb-3">
+                        <div class="input-group">
+                            <label id="browsebutton" class="btn btn-updateProfile input-group-addon" for="fileUpload">
+                                {{ form.fileUpload(id="fileUpload", type="file", value="") }}
+                                Browse...
+                            </label>
+                            <input class="form-control image-path-box" id="image_name" name="image_name" readonly="readonly" type="text" value=" {{imageName}}" >
+                        </div>                                
+                    </div>
+                    <div>
+                        <div>
+                            <canvas id="myCanvas" width="360" height="450"></canvas>
+                        </div>
+                        <div class="cropped-image-content">
+                            <img id="cropped_image"</img>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row summernote-z">
+                <label class="control-label">About Me</label>
+                <textarea id="summernote" name="editordata">
+                    {% if about_me %}
+                        {{about_me|safe}}
+                    {% endif %}
+                </textarea>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    $(document).ready(function() {
+        console.log("** edit_profile.html - myCanvas & imageSrc Init **");
+        var timestamp = new Date().getTime();
+        var queryString = "?t=" + timestamp;
+        var imageSrc = document.getElementById('imageSrc');
+        var imgURL = imageSrc.src;
+        var canvas = document.getElementById('myCanvas');
+        var context = canvas.getContext('2d');
+        context.drawImage(imageSrc, 0, 10);
+        imageSrc.src = imgURL + queryString; 
+    });
+</script>
+<script>    
+    $(document).ready(function() {
+        console.log("** edit_profile.html - Loading Summernote **");
+        $('#summernote').summernote({
+            height: 250,
+            width: 725,
+            toolbar: [
+                      ['style', ['style']],
+                      ['font', ['bold', 'underline', 'clear']],
+                      ['fontname', ['fontname']],
+                      ['color', ['color']],
+                      ['para', ['ul', 'ol', 'paragraph']],
+                      ['insert', ['link']],
+                      ['view', ['fullscreen', 'codeview', 'help']],
+                    ],
+        });
+    });
+</script>
+{% endblock %}
+

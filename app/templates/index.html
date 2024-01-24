@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block styles %}
+{{super()}}
+{% endblock %}
+
+{% block app_content %}
+            <br>
+            <div class="title-box">
+                {% if title == 'Home' %}
+                    <h1>Viscira</h1>
+                {% else %}    
+                    <h1>{{title}}</h1>
+                {% endif %}                
+            </div>            
+            <form action="" method="post">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="mdb-lightbox-ui"></div>
+                        <div class="mdb-lightbox">                            
+                            {% if employees %}
+                                {% for employee in employees %}
+                                    {% include "_employee.html" %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-12 paginate-align">
+                        {% if prev_url %}
+                            <a href="{{ prev_url }}"><span class="glyphicon glyphicon-menu-left"></span></a>
+                        {% endif %}            
+                        <div class=pagination>
+                            {% for page in paginatedEmployees.iter_pages() %}
+                                {% if page %}
+                                    {% if page != paginatedEmployees.page %}
+                                        <a href="{{ url_for('main.index', page=page) }}">{{ page }}</a>
+                                    {% else %}
+                                        <a href="{{ url_for('main.index', page=page) }}"><strong>{{ page }}</strong></a>
+                                    {% endif %}
+                                {% endif %}
+                            {%- endfor %}
+                        </div>
+                        {% if next_url %}
+                            <a href="{{ next_url }}"><span class="glyphicon glyphicon-menu-right"></span></a>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    $(document).ready(function() {
+        console.log("** index.html - Home Page Loaded **");
+    });
+</script>
+{% endblock %}

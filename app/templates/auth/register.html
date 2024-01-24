@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <div class="register-layout">     
+        <form id="cropForm">
+            <div id="overlay-container" class="popup-overlay">                
+                <div id="image-holder">
+                </div>
+                <div>
+                    <input class="btn btn-primary" id="cropbtn" name="crop" type="submit" value="Click to complete Crop!">
+                    <button type="reset" value="Reset">Cancel</button>
+                </div>
+            </div>
+        </form>          
+        <form action="" method="post" enctype="multipart/form-data" class="form" role="form">
+            {% for field in registrationForm.errors %}
+            {% for error in registrationForm.errors[field] %}
+                <div class="alert alert-error error">
+                    <strong>Error!</strong> {{error}}
+                </div>
+            {% endfor %}
+            {% endfor %}
+            {{registrationForm.submit(class="btn btn-register-update")}}
+            <div class="row">
+                <div class="col-md-4 register-col1">
+                    {{ registrationForm.hidden_tag() }}
+                    <div class="form-group  required"><label class="control-label" for="first_name">First Name</label>
+                        {{registrationForm.first_name(class="form-control")}}
+                    </div>
+                    <div class="form-group  required"><label class="control-label" for="last_name">Last Name</label>
+                        {{registrationForm.last_name(class="form-control")}}
+                    </div>
+                    <div class="form-group  required"><label class="control-label" for="email">Email</label>
+                        {{registrationForm.email(class="form-control")}}
+                    </div>
+                    
+                    </br>
+                    
+                    <div class="form-group  required"><label class="control-label" for="job_title">Job Title</label>
+                        {{registrationForm.job_title(class="form-control")}}
+                    </div>
+                    <div class="form-group  required"><label class="control-label" for="department">Department</label>
+                        {{registrationForm.department(class="form-control")}}
+                    </div>
+                    <div class="form-group  required"><label class="control-label" for="location">location</label>   
+                        {{registrationForm.location(class="form-control")}}
+                    </div>
+                    <div class="form-group  required"><label class="control-label" for="start_date">Start Date</label>   
+                        {{registrationForm.start_date(class="form-control")}}
+                    </div>
+                    
+                    </br>
+                    
+                    <div class="form-group  required"><label class="control-label" for="password">Password</label>   
+                        {{registrationForm.password(class="form-control")}}
+                    </div>
+                    <div class="form-group  required"><label class="control-label" for="password2">Repeat Password</label>   
+                        {{registrationForm.password2(class="form-control")}}
+                    </div>
+                </div>
+                
+                <div class="col-md-4 register-col2">                
+                    <img id="imageSrc" hidden="true">
+                    <label class="control-label" for="employee_image">Employee Photo</label>
+                    <br>
+                    <div class="input-group mb-3">
+                        <div class="input-group">
+                            <label id="browsebutton" class="btn btn-default input-group-addon" for="fileUpload">
+                                {{ registrationForm.fileUpload(id="fileUpload", type="file", value="") }}
+                                Browse...
+                            </label>
+                            <input class="form-control" id="image_name" name="image_name" readonly="readonly" type="text" value="" >
+                        </div>                                
+                    </div>
+                    <div>
+                        <div>
+                            <canvas id="myCanvas" width="360" height="450"></canvas>
+                        </div>                        
+                        <div class="cropped-image-content">
+                            <img id="cropped_image"</img>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+            <div class="row">
+                <label class="control-label">About Me</label>
+                <textarea id="summernote" name="editordata">
+                    {% if about_me %}
+                        {{about_me|safe}}
+                    {% endif %}
+                </textarea>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+
+{% block scripts %}
+{{ super() }}
+<script>
+    console.log("** register.html - myCanvas **");
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    ctx.font = "20px Arial";
+    ctx.fillStyle = '#de3718';
+    ctx.fillText("Please Upload Image To Proceed",30,50);
+</script>
+<script>    
+    $(document).ready(function() {
+        console.log("** register.html - Loading Summernote **");
+        $('#summernote').summernote({
+            height: 250,
+            width: 725,
+            toolbar: [
+                      ['style', ['style']],
+                      ['font', ['bold', 'underline', 'clear']],
+                      ['fontname', ['fontname']],
+                      ['color', ['color']],
+                      ['para', ['ul', 'ol', 'paragraph']],
+                      ['insert', ['link']],
+                      ['view', ['fullscreen', 'codeview', 'help']],
+                    ],
+        });
+    });
+</script>
+{% endblock %}
+
+

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block styles %}
+{{super()}}
+{% endblock %}
+
+{% block app_content %}
+    <div class="title-box">
+        <h1>Search Results: "{{ search_word }}"</h1>
+    </div>    
+    {% for employee in employees %}
+        {% include '_employee.html' %}
+    {% endfor %}
+    <div class="col-md-12 paginate-align">
+        {% if prev_url %}
+            <a href="{{ prev_url }}"><span class="glyphicon glyphicon-menu-left"></span></a>
+        {% endif %}    
+        {% if next_url %}
+            <a href="{{ next_url }}"><span class="glyphicon glyphicon-menu-right"></span></a>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    $(document).ready(function() {
+        console.log("** search.html - Please Log In **");
+    });
+</script>
+{% endblock %}

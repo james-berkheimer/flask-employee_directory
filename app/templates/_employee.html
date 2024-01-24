@@ -1,0 +1,10 @@
+
+
+                <figure class="col-md-4 employeeBox">
+                    <a class="black-text" href="{{ url_for('main.employee', displayname=employee.email.split('@')[0]) }}">
+                        <img alt="picture" src="{{employee.getEmployeePhoto()}}" class="img-fluid photo-width">
+                        <h4 class="text-center my-3 h4-name">{{employee.first_name}} {{employee.last_name}}</h4>
+                        <p class="text-center my-3 p-jobtitle"><i>{{employee.job_title}}</i></p>
+                        <!--<p class="text-center my-3 p-department"><i>{{employee.department}}</i></p>-->
+                    </a>
+                </figure>

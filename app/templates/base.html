@@ -1,0 +1,95 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block styles %}
+{{super()}}
+<link href="{{url_for('static', filename='css/summernote.css')}}" rel="stylesheet">
+<!-- <link href="{{url_for('static', filename='css/jquery.Jcrop.css')}}" rel="stylesheet"> -->
+<link href="{{url_for('static', filename='css/croppie.css')}}" rel="stylesheet">
+<link href="{{url_for('static', filename='css/w3.css')}}" rel="stylesheet">
+<link href="{{url_for('static', filename='css/style.css')}}" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript"
+        src="{{url_for('static', filename='js/summernote.js')}}">    
+</script>
+<!-- <script type="text/javascript"
+        src="{{url_for('static', filename='js/jquery.Jcrop.js')}}">    
+</script> -->
+<script type="text/javascript"
+        src="{{url_for('static', filename='js/croppie.js')}}">    
+</script>
+<script type="text/javascript"
+        src="{{url_for('static', filename='js/exif.js')}}">    
+</script>
+<script type="text/javascript"
+        src="{{url_for('static', filename='js/scripts.js')}}">    
+</script>
+
+{% endblock %}
+
+
+{% block title %}
+    {% if title %}{{ title }} - Viscira Employee Directory{% else %}{{ 'Welcome to Viscira Employee Directory' }}{% endif %}
+{% endblock %}
+
+{% block content %}
+    <p hidden="true" id="departmentName">Departments</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-info {{ category }}" role="alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}  
+    <div class="sidebar">        
+        <img alt="picture"
+             src="/static/img/viscira_squarelogo.png"
+             class="vismo-icon">
+        <a href="{{ url_for('main.index') }}">Home</a>
+        {% if current_user.is_anonymous %}
+        <a href="{{ url_for('auth.login') }}">{{ ('Login') }}</a>
+        <a href="{{ url_for('auth.register') }}">Register</a>
+        {% else %}
+        <a href="{{ url_for('main.employee', displayname=current_user.email.split('@')[0]) }}">
+            {{ ('Profile') }}
+        </a>
+        <a href="{{ url_for('auth.logout') }}">{{ ('Logout') }}</a>
+        {% endif %}                    
+        <div class="dropdown">                        
+            <a class="btn btn-secondary dropdown-toggle dropdown-align"
+               href="#" role="button"
+               id="dropdownMenuLink"
+               data-toggle="dropdown"
+               aria-haspopup="true"
+               aria-expanded="false">
+                Departments
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                {% for department in g.departments %}
+                    <li><a class="textwrap dropdown-item"
+                       href="{{ url_for('main.departmentFilter', filterKey=department) }}">
+                        {{department}}
+                    </a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <br>
+        {% if g.search_form %}
+        <form class="" method="get" action="{{ url_for('main.search') }}">
+            <div class="">
+                {{ g.search_form.q(size=20, class='searchbox-align form-control',
+                placeholder=g.search_form.q.label.text) }}
+            </div>
+        </form>
+       {% endif %}
+    </div>
+    <div class="content">
+        {# application content needs to be provided in the app_content block #} 
+        {% block app_content %}
+        {% endblock %}                
+    </div>
+{% endblock %}
+

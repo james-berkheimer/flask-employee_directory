@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <div class="container">    
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 >
+                        {% set currentid = current_user.get_id() | int %}
+                        {% if currentid == employee.id %}
+                            <p><a href="{{ url_for('main.edit_profile', displayname=employee.email.split('@')[0]) }}">Edit your profile</a></p>
+                        {% elif ADMIN == True %}
+                            <p><a href="{{ url_for('main.edit_profile', displayname=employee.email.split('@')[0]) }}">ADMIN Edit profile</a></p>
+                        {% endif %}
+                    </h4>                    
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-4 col-xs-12 col-sm-6 col-lg-4">
+                        <img alt="User Pic" src="{{employee.getEmployeePhoto()}}" id="profile-image1" class="w3-round-xxlarge img-responsive">                       
+                    </div>
+                    <div class="col-md-8 col-xs-12 col-sm-6 col-lg-8" >
+                        <div class="container" >
+                            <h2>{{ employee.first_name }} {{ employee.last_name }}</h2>
+                            <p><b> {{ employee.job_title }}</b> for <b>{{ employee.department }}</b></p>
+                        </div>
+                        <hr>
+                        <ul class="container details" >
+                            <li><p><span class="glyphicon glyphicon-globe one" style="width:50px;"></span>{{ employee.location }}</p></li>
+                            <li><p><span class="glyphicon glyphicon-envelope one" style="width:50px;"></span>{{ employee.email }}</p></li>
+                            <li><p><span class="glyphicon glyphicon-calendar one" style="width:50px;"></span>{{ formatedDate }}
+                            {% if employee.current_employee == True %}
+                                (Current)
+                            {% else %}
+                                (Alumni)
+                            {% endif %}
+                            </p></li>                            
+                        </ul>
+                        <hr>
+                        <div class="col-sm-5 col-xs-6 tital about-me" >
+                            <h4>Bio:</h4>
+                            <p>
+                                {% if employee.about_me %}
+                                    {{employee.about_me|safe}}
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>        
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>  
+    window.onload = function() {
+        console.log("** employee.html - " + "{{ employee.first_name }} " + "{{ employee.last_name }} **");
+        var timestamp = new Date().getTime();
+        var queryString = "?t=" + timestamp; 
+        var img = document.getElementById("profile-image1");
+        var imgURL = img.src;
+        img.src = imgURL + queryString; 
+    };
+</script>
+{% endblock %}
